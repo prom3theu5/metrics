@@ -1565,15 +1565,14 @@ runs:
         METRICS_IMAGE_NEEDS_BUILD="$?"
         set -e
         if [[ "$METRICS_IMAGE_NEEDS_BUILD" -gt "0" ]]; then
-          echo "Image $METRICS_IMAGE is not present locally, rebuilding it from Dockerfile"
-          docker build -t $METRICS_IMAGE .
+          docker pull ghcr.io/lowlighter/metrics:latest
         else
           echo "Image $METRICS_IMAGE is present locally"
         fi
         echo "::endgroup::"
 
         # Run docker image with current environment
-        docker run --init --rm --volume $GITHUB_EVENT_PATH:$GITHUB_EVENT_PATH --volume $METRICS_RENDERS:/renders --env-file .env $METRICS_IMAGE
+        docker run --init --rm --volume $GITHUB_EVENT_PATH:$GITHUB_EVENT_PATH --volume $METRICS_RENDERS:/renders --env-file .env ghcr.io/lowlighter/metrics:latest
         rm .env
       shell: bash
       env:
